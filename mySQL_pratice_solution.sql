@@ -1,5 +1,5 @@
 ### 이희만 강사님이 주신 SQL 연습문제 풀이 ! 
-use newhr;  
+use newhr; 
 ## 1번 문제 커미션을 받는 사원은 어떤 사원들인가?
 # sol) 1-1. is not null 사용하여 출력
 select *
@@ -154,21 +154,45 @@ select l.city, d.department_name
 from departments d join locations l on d.location_id = l.location_id
 where l.location_id in (1500, 1400);
 
-#### Aggregation
+#### Aggregation -> max, min, sum, avg, count를 사용하세요 ! 
 ## 21번 문제 직종별 최고 급여를 급여가 많은 직종부터 출력하시오.
-# sol) 21-1. 21번부터 해야함
+# sol) 21-1. 최대급여를 계산하기위해 max함수를 이용하여 salary를 바꿔줌 -> group by 직종으로 검색하여 직종별로 하나만 나오게 계산
+select job_id, max(salary) as max_salary
+from employees
+group by job_id
+order by max_salary DESC;
 
 ## 22번 문제 직종별 최고 급여를 급여가 많은 직종부터 출력하시오. (단, 직원이 2명 이상인 경우만)
+# sol) 22-1. group by절에 있는 애들중에서 having절로 2번 카운팅되는 부분을 고름
+select job_id, max(salary) as max_salary
+from employees
+group by job_id having count(*) >= 2
+order by max_salary DESC;
+
+# 여기서 계산해보면 9개의 직종이 2명이상씩 카운팅됨
+select job_id
+from employees;
+
 # HAVING 사용법
+# HAVING 절은 GROUP BY로 묶은 "집계 결과"에 조건을 주는 데 사용
 #### subquery
 # EXISTS 연산자 
 ## 23번 문제 사원이 한명이라도 있는 부서명을 출력하시오. 
+# sol) 23-1. exists는 subquery에 존재하는지 안하는지를 검사하는 것
+# select 1이라면 1개라도 집계가 된다면~을 의미함
+select d.department_name
+from employees e join departments d on e.department_id = d.department_id
+where exists(
+select 1 from employees where department_id)
+group by d.department_name;
 
 ## Subquery의 종류
 
 ## 24번 문제 각 부서별로 최고급여를 받는 사원을 출력하시오. 
 # Nested Query
 # Correlated Query
+# sol) 24-1.
+
 
 # TOP-K 질의
 ## 25번 문제 급여를 많이 받는 순서대로 상위 3명을 출력하시오.
